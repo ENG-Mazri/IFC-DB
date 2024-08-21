@@ -22,16 +22,28 @@ type MetaData {
   elementsCount: Float!
 }
 
+type Geometry {
+  id: Int!
+  expressID: Float!
+  geometryID: Float!
+  verts: String!
+  indices: String!
+}
+
 type Query {
   getElements: [Ifc!]!
   getElementByExpressID(expressID: Int!): Ifc!
   getElementsByClass(class: String!): [Ifc!]!
   getMetaData: MetaData!
+  getGeometries: [Geometry!]!
+  getGeometryByGeometryID(geometryID: Int!): Geometry!
+  getElementGeometriesByExpressId(expressID: Int!): [Geometry!]!
 }
 
 type Mutation {
   createIfc(createIfcInput: CreateIfcInput!): Ifc!
   createMetaData(createMetaDataInput: CreateMetaDataInput!): MetaData!
+  createGeometry(createGeometryInput: CreateGeometryInput!): Geometry!
 }
 
 input CreateIfcInput {
@@ -50,4 +62,11 @@ input CreateMetaDataInput {
   application: String
   author: String
   elementsCount: Float!
+}
+
+input CreateGeometryInput {
+  expressID: Float!
+  geometryID: Float!
+  verts: String!
+  indices: String!
 }
