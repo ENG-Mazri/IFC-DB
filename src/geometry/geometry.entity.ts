@@ -25,4 +25,12 @@ export class Geometry {
   @Column()
   @Field()
   indices: string;
+
+  @Column()
+  @Field()
+  matrix: string;
+
+  @Column()
+  @Field()
+  color: string;
 }

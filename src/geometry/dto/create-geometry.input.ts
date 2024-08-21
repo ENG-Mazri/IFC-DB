@@ -15,4 +15,10 @@ export class CreateGeometryInput {
 
   @Field()
   indices: string;
+
+  @Field()
+  matrix: string;
+
+  @Field()
+  color: string;
 }

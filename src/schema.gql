@@ -28,6 +28,8 @@ type Geometry {
   geometryID: Float!
   verts: String!
   indices: String!
+  matrix: String!
+  color: String!
 }
 
 type Query {
@@ -69,4 +71,6 @@ input CreateGeometryInput {
   geometryID: Float!
   verts: String!
   indices: String!
+  matrix: String!
+  color: String!
 }

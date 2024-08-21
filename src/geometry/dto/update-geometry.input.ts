@@ -14,4 +14,10 @@ export class UpdateGeometryInput extends PartialType(CreateGeometryInput) {
 
   @Field()
   indices: string;
+
+  @Field()
+  matrix: string;
+
+  @Field()
+  color: string;
 }

@@ -14,6 +14,9 @@ import { MetaData } from './metadata/metadata.entity';
 import { Ifc } from './ifc/ifc.entity';
 import { GeometryService } from './geometry/geometry.service';
 import { Geometry } from './geometry/geometry.entity';
+import { MySQLConfigService } from './mysql.config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+
 
 //docker exec -it mysql-24 bash
 // @Module({
@@ -33,15 +36,16 @@ import { Geometry } from './geometry/geometry.entity';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true
+    }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       driver: ApolloDriver,
     }),
-    TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: ':memory:',//'db.sqlite',
-      entities: ['dist/**/*.entity.js'],
-      synchronize: true
+    TypeOrmModule.forRootAsync({
+      useClass: MySQLConfigService,
+      inject: [MySQLConfigService]
     }),
     IfcModule,
     MetadataModule,
@@ -49,7 +53,7 @@ import { Geometry } from './geometry/geometry.entity';
     TypeOrmModule.forFeature([Ifc, MetaData, Geometry])
   ],
   controllers: [AppController],
-  providers: [AppService, IfcService, MetaDataService, GeometryService],
+  providers: [AppService, MySQLConfigService, IfcService, MetaDataService, GeometryService, ConfigService],
 })
 
 export class AppModule {
@@ -57,9 +61,10 @@ export class AppModule {
       private appService: AppService,
       private ifcService: IfcService, 
       private metaDataService: MetaDataService,
-      private geometryService: GeometryService
+      private geometryService: GeometryService,
+      private configService: ConfigService
   ){
-    this.appService.init(ifcService, metaDataService, geometryService);
+    this.appService.init(ifcService, metaDataService, geometryService, configService);
   }
   
 }

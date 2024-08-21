@@ -1,11 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { IfcService } from './ifc/ifc.service';
-import { IfcAPI, FlatMesh, Vector, PlacedGeometry } from 'web-ifc';
+import { IfcAPI, FlatMesh } from 'web-ifc';
 import {readFileSync} from 'fs';
 import { join } from 'path';
 import { IfcUtils } from './logic/IfcUtils';
 import { MetaDataService } from './metadata/metadata.service';
 import { GeometryService } from './geometry/geometry.service';
+import { ConfigService } from '@nestjs/config';
+import { InjectEntityManager } from '@nestjs/typeorm';
+import { EntityManager } from 'typeorm';
 
 
 @Injectable()
@@ -16,17 +19,23 @@ export class AppService {
   private geometryservice: GeometryService;
   private IFCAPI: IfcAPI;
 
-  constructor(){
+  constructor(   
+    @InjectEntityManager()
+    private readonly entityManager: EntityManager
+  ){
     this.IFCAPI = new IfcAPI(); 
   }
 
-  init(ifcService: IfcService, metaDataService: MetaDataService, geometryservice: GeometryService){
+  init(ifcService: IfcService, metaDataService: MetaDataService, geometryservice: GeometryService, configService: ConfigService){
     this.ifcService = ifcService;
     this.metaDataService = metaDataService;
     this.geometryservice = geometryservice;
     this.ifcService.clearDB();
     this.metaDataService.clearDB();
     this.processModel('minimalWall.ifc');
+    // configService.set('DB_NAME', 'kolo')
+    const database = "smallifc";
+    this.entityManager.connection.query(`CREATE DATABASE ${database};`);
   }
 
   public async processModel(name: string){
@@ -40,9 +49,9 @@ export class AppService {
     this.generateMetaData(name, elementIds.length, modelID);
     this.generateElementsData(elementIds, modelID);
 
-    this.IFCAPI.StreamAllMeshes(modelID, (mesh: FlatMesh, index: number, total: number)=>{
-      this.generateGeometry(mesh);
-    })
+    // this.IFCAPI.StreamAllMeshes(modelID, (mesh: FlatMesh, index: number, total: number)=>{
+    //   this.generateGeometry(mesh);
+    // })
     
   }
 
@@ -72,11 +81,39 @@ export class AppService {
     }
   }
 
-  private generateGeometry(mesh: FlatMesh){
+  private generateGeometry(mesh: FlatMesh, modelID: number = 0){
     const geometries = mesh.geometries;
     const size = geometries.size();
 
-  };
+    for (let i = 0; i < size; i++) {
+      const placedGeometry = geometries.get(i);
+      const {verts, indices} = this.getGeometryData(modelID, placedGeometry.geometryExpressID);
+      this.geometryservice.createGeometryRecord({
+        expressID: mesh.expressID,
+        geometryID: placedGeometry.geometryExpressID,
+        verts,
+        indices,
+        matrix: JSON.stringify(placedGeometry.flatTransformation),
+        color: JSON.stringify(placedGeometry.color)
+      })
+
+    }
+  }
+
+  getGeometryData(modelID: any, geometryID: number) {
+    
+    const geometry = this.IFCAPI.GetGeometry(modelID, geometryID);
+    const verts = JSON.stringify(Array.from(this.IFCAPI.GetVertexArray(geometry.GetVertexData(), geometry.GetVertexDataSize())));
+    const indices = JSON.stringify(Array.from(this.IFCAPI.GetIndexArray(geometry.GetIndexData(), geometry.GetIndexDataSize())));
+
+    //DEBUG
+    // const decoder = new TextDecoder('utf-8');
+    // const r = JSON.parse(decoder.decode(Buffer.from(verts)));
+
+    //@ts-ignore
+    geometry.delete();
+    return {verts, indices};
+  }
 
   
 }
