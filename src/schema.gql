@@ -1,0 +1,53 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Ifc {
+  id: Int!
+  expressID: Float!
+  name: String
+  class: String!
+  globalID: String!
+}
+
+type MetaData {
+  id: Int!
+  schema: String!
+  name: String!
+  description: String
+  uuid: String!
+  organization: String
+  application: String
+  author: String
+  elementsCount: Float!
+}
+
+type Query {
+  getElements: [Ifc!]!
+  getElementByExpressID(expressID: Int!): Ifc!
+  getElementsByClass(class: String!): [Ifc!]!
+  getMetaData: MetaData!
+}
+
+type Mutation {
+  createIfc(createIfcInput: CreateIfcInput!): Ifc!
+  createMetaData(createMetaDataInput: CreateMetaDataInput!): MetaData!
+}
+
+input CreateIfcInput {
+  expressID: Float!
+  name: String!
+  class: String!
+  globalID: String!
+}
+
+input CreateMetaDataInput {
+  schema: String!
+  name: String!
+  description: String
+  uuid: String!
+  organization: String
+  application: String
+  author: String
+  elementsCount: Float!
+}
