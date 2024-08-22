@@ -9,7 +9,7 @@ export class MySQLConfigService implements TypeOrmOptionsFactory {
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
     return {
-      manualInitialization: true,
+      // manualInitialization: true,
       type: 'mysql',
       host: "localhost",
       port: 3306,
@@ -17,7 +17,7 @@ export class MySQLConfigService implements TypeOrmOptionsFactory {
       password: "my-secret-pw",
       database: this.configService.get<string>('DB_NAME'),
       entities: ['dist/**/*.entity.js'],
-      name: 'my-lovely-connection',
+      name: 'ifc-connection',
       synchronize: true,
       // poolErrorHandler: async (err) => {
       //   Logger.error(err);

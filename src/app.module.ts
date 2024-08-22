@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -16,6 +16,7 @@ import { GeometryService } from './geometry/geometry.service';
 import { Geometry } from './geometry/geometry.entity';
 import { MySQLConfigService } from './mysql.config';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { LoggerMiddleware } from './middlewares/logger.middleware';
 
 
 //docker exec -it mysql-24 bash
@@ -67,6 +68,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 })
 
 export class AppModule {
+  // configure(consumer: MiddlewareConsumer) {
+  //   consumer
+  //     .apply(LoggerMiddleware)
+      
+  // }
   constructor(
       private appService: AppService,
       private ifcService: IfcService, 

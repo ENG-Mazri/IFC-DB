@@ -10,6 +10,7 @@ import { ConfigService } from '@nestjs/config';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
 import { Ifc } from './ifc/ifc.entity';
+import { DbSwitch } from './middlewares/DbSwitch.middleware';
 
 
 @Injectable()
@@ -31,21 +32,14 @@ export class AppService {
     this.metaDataService = metaDataService;
     this.ifcService = ifcService;
     this.geometryservice = geometryservice;
-    const database = "smallifc"; 
-    configService.set('DB_NAME', database);
+    const database = "walltest"; 
 
-    this.entityManager.connection.setOptions({database});
-    this.entityManager.connection.driver.options = this.entityManager.connection.options;
-
-    this.entityManager.connection.initialize().then(async ()=>{ 
-      await this.processModel('minimalWall.ifc');
-
-    })
-
+    await DbSwitch(this.entityManager.connection, database, true);
+    await this.processModel('wallTest.ifc');
   }
 
   public async processModel(name: string){
-    const ifcRawData = readFileSync( join(__dirname, '../assets/small-ifc.ifc'));
+    const ifcRawData = readFileSync( join(__dirname, '../assets/wallTest.ifc'));
     await this.IFCAPI.Init();
     this.IFCAPI.SetWasmPath(join(__dirname,"../assets/"));
     
