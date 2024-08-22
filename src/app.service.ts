@@ -8,7 +8,8 @@ import { MetaDataService } from './metadata/metadata.service';
 import { GeometryService } from './geometry/geometry.service';
 import { ConfigService } from '@nestjs/config';
 import { InjectEntityManager } from '@nestjs/typeorm';
-import { EntityManager } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
+import { Ifc } from './ifc/ifc.entity';
 
 
 @Injectable()
@@ -26,16 +27,21 @@ export class AppService {
     this.IFCAPI = new IfcAPI(); 
   }
 
-  init(ifcService: IfcService, metaDataService: MetaDataService, geometryservice: GeometryService, configService: ConfigService){
-    this.ifcService = ifcService;
+  async init(ifcService: IfcService, metaDataService: MetaDataService, geometryservice: GeometryService, configService: ConfigService){
     this.metaDataService = metaDataService;
+    this.ifcService = ifcService;
     this.geometryservice = geometryservice;
-    this.ifcService.clearDB();
-    this.metaDataService.clearDB();
-    this.processModel('minimalWall.ifc');
-    // configService.set('DB_NAME', 'kolo')
-    const database = "smallifc";
-    this.entityManager.connection.query(`CREATE DATABASE ${database};`);
+    const database = "smallifc"; 
+    configService.set('DB_NAME', database);
+
+    this.entityManager.connection.setOptions({database});
+    this.entityManager.connection.driver.options = this.entityManager.connection.options;
+
+    this.entityManager.connection.initialize().then(async ()=>{ 
+      await this.processModel('minimalWall.ifc');
+
+    })
+
   }
 
   public async processModel(name: string){
@@ -49,7 +55,7 @@ export class AppService {
     this.generateMetaData(name, elementIds.length, modelID);
     this.generateElementsData(elementIds, modelID);
 
-    // this.IFCAPI.StreamAllMeshes(modelID, (mesh: FlatMesh, index: number, total: number)=>{
+    // this.IFCAPI.StreamAllMeshes(modelID, (mesh: FlatMesh, index: number, total: number)=>{ 
     //   this.generateGeometry(mesh);
     // })
     
@@ -71,13 +77,13 @@ export class AppService {
   private generateElementsData(elementIds: number[], modelID: number = 0): void {
     for (let i = 0; i < elementIds.length; i++) { 
       const element = this.IFCAPI.GetLine(modelID, elementIds[i]);
-      
+
       this.ifcService.createElementRecord({
         expressID: element.expressID,
         class: IfcUtils.getNameFromTypeCode(this.IFCAPI, element.type),
         globalID: element.GlobalId.value,
         name: element.Name?.value ? element.Name?.value : ''
-      })
+      }) 
     }
   }
 
@@ -114,6 +120,5 @@ export class AppService {
     geometry.delete();
     return {verts, indices};
   }
-
-  
+ 
 }

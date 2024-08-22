@@ -8,7 +8,6 @@ import { CreateIfcInput } from './dto/create.ifc.input';
 export class IfcService {
     constructor( @InjectRepository(Ifc) private ifcRepository: Repository<Ifc> ){}
 
-
     async createElementRecord(createIfcInput: CreateIfcInput): Promise<Ifc> {
         const element = this.ifcRepository.create(createIfcInput);
         return this.ifcRepository.save(element);
@@ -18,7 +17,7 @@ export class IfcService {
         return this.ifcRepository.find();
     }
 
-    async findOneByExprtessID(expressID: number): Promise<Ifc>{
+    async findOneByExprtessID(expressID: number): Promise<Ifc> {
         return this.ifcRepository.findOneOrFail({where: {expressID}});
     }
 

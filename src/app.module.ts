@@ -47,6 +47,16 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       useClass: MySQLConfigService,
       inject: [MySQLConfigService]
     }),
+    // TypeOrmModule.forRoot({
+    //   manualInitialization: true,
+    //   type: 'mysql',
+    //   host: "localhost",
+    //   port: 3306,
+    //   username: "root",
+    //   password: "my-secret-pw",
+    //   entities: ['dist/**/*.entity.js'],
+    //   name: 'alternative'
+    // }),
     IfcModule,
     MetadataModule,
     GeometryModule,

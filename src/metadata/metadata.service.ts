@@ -8,7 +8,6 @@ import { CreateMetaDataInput } from './dto/create.metadata.input';
 export class MetaDataService {
     constructor( @InjectRepository(MetaData) private metaDataRepository: Repository<MetaData> ){}
 
-
     async createMetaData(createIfcInput: CreateMetaDataInput): Promise<MetaData> {
         const newIfc = this.metaDataRepository.create(createIfcInput);
         return this.metaDataRepository.save(newIfc);

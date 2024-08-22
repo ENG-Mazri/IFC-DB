@@ -4,7 +4,6 @@ import { IfcService } from './ifc.service';
 import { Ifc } from './ifc.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-
 @Module({
   imports: [TypeOrmModule.forFeature([Ifc])],
   providers: [IfcResolver, IfcService],

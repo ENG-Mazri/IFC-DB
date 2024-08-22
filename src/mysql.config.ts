@@ -9,16 +9,33 @@ export class MySQLConfigService implements TypeOrmOptionsFactory {
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
     return {
+      manualInitialization: true,
       type: 'mysql',
       host: "localhost",
       port: 3306,
       username: "root",
       password: "my-secret-pw",
       database: this.configService.get<string>('DB_NAME'),
+      entities: ['dist/**/*.entity.js'],
+      name: 'my-lovely-connection',
+      synchronize: true,
+      // poolErrorHandler: async (err) => {
+      //   Logger.error(err);
+      //   const retryDelayMs = 1000;
+      //   const reconnection = setInterval(async () => {
+      //     Logger.log(
+      //       `DB Connection lost. Retry every ${retryDelayMs}ms...`,
+      //     );
+      //     const datasource = new DataSource(databaseOptions);
+      //     const db = await datasource.initialize();
+      //     if (db && db.isInitialized) {
+      //       Logger.log('Connection restored.');
+      //       clearInterval(reconnection);
+      //     }
+      //   }, retryDelayMs);
+      // },
       // type: 'sqlite',
       // database: 'db.sqlite',//':memory:', 
-      entities: ['dist/**/*.entity.js'],
-      synchronize: true
       // url: this.configService.get<string>('MONGODB_URL'),
       // username: this.configService.get<string>('MONGODB_USER'),
       // password: this.configService.get<string>('MONGODB_PASSWORD'),

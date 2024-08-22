@@ -7,23 +7,23 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class GeometryService {
-  constructor( @InjectRepository(Geometry) private ifcRepository: Repository<Geometry> ){}
+  constructor( @InjectRepository(Geometry) private geometryRepository: Repository<Geometry> ){}
 
   createGeometryRecord(createGeometryInput: CreateGeometryInput) {
-    const element = this.ifcRepository.create(createGeometryInput);
-    return this.ifcRepository.save(element);
+    const element = this.geometryRepository.create(createGeometryInput);
+    return this.geometryRepository.save(element);
   }
 
   async findOneByGeometryID(geometryID: number): Promise<Geometry>{
-    return this.ifcRepository.findOneOrFail({where: {geometryID}});
+    return this.geometryRepository.findOneOrFail({where: {geometryID}});
   }
 
   async findAllByExprtessID(expressID: number): Promise<Geometry[]>{
-    return this.ifcRepository.findBy({expressID});
+    return this.geometryRepository.findBy({expressID});
   }
 
   findAll() {
-    return this.ifcRepository.find();
+    return this.geometryRepository.find();
   }
 
   // findOne(id: number) {
