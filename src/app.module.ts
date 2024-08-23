@@ -5,13 +5,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { IfcModule } from './ifc/ifc.module';
+import { ElementModule } from './element/element.module';
 import { MetadataModule } from './metadata/metadata.module';
-import { IfcService } from './ifc/ifc.service';
+import { ElementService } from './element/element.service';
 import { MetaDataService } from './metadata/metadata.service';
 import { GeometryModule } from './geometry/geometry.module';
 import { MetaData } from './metadata/metadata.entity';
-import { Ifc } from './ifc/ifc.entity';
+import { Element } from './element/element.entity';
 import { GeometryService } from './geometry/geometry.service';
 import { Geometry } from './geometry/geometry.entity';
 import { MySQLConfigService } from './mysql.config';
@@ -58,13 +58,13 @@ import { LoggerMiddleware } from './middlewares/logger.middleware';
     //   entities: ['dist/**/*.entity.js'],
     //   name: 'alternative'
     // }),
-    IfcModule,
+    ElementModule,
     MetadataModule,
     GeometryModule,
-    TypeOrmModule.forFeature([Ifc, MetaData, Geometry])
+    TypeOrmModule.forFeature([Element, MetaData, Geometry])
   ],
   controllers: [AppController],
-  providers: [AppService, MySQLConfigService, IfcService, MetaDataService, GeometryService, ConfigService],
+  providers: [AppService, MySQLConfigService, ElementService, MetaDataService, GeometryService, ConfigService],
 })
 
 export class AppModule {
@@ -75,12 +75,12 @@ export class AppModule {
   // }
   constructor(
       private appService: AppService,
-      private ifcService: IfcService, 
+      private elementService: ElementService, 
       private metaDataService: MetaDataService,
       private geometryService: GeometryService,
       private configService: ConfigService
   ){
-    this.appService.init(ifcService, metaDataService, geometryService, configService);
+    this.appService.init(elementService, metaDataService, geometryService, configService);
   }
   
 }

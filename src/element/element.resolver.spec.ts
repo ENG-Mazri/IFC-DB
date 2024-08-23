@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { IfcResolver } from './ifc.resolver';
+import { ElementResolver } from './element.resolver';
 
-describe('IfcResolver', () => {
-  let resolver: IfcResolver;
+describe('ElementResolver', () => {
+  let resolver: ElementResolver;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [IfcResolver],
+      providers: [ElementResolver],
     }).compile();
 
-    resolver = module.get<IfcResolver>(IfcResolver);
+    resolver = module.get<ElementResolver>(ElementResolver);
   });
 
   it('should be defined', () => {

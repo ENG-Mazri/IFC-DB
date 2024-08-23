@@ -2,7 +2,7 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Ifc {
+type Element {
   id: Int!
   expressID: Float!
   name: String
@@ -33,9 +33,9 @@ type Geometry {
 }
 
 type Query {
-  getElements: [Ifc!]!
-  getElementByExpressID(expressID: Int!): Ifc!
-  getElementsByClass(class: String!): [Ifc!]!
+  getElements: [Element!]!
+  getElementByExpressID(expressID: Int!): Element!
+  getElementsByClass(class: String!): [Element!]!
   getMetaData: MetaData!
   getGeometries: [Geometry!]!
   getGeometryByGeometryID(geometryID: Int!): Geometry!
@@ -43,12 +43,12 @@ type Query {
 }
 
 type Mutation {
-  createIfc(createIfcInput: CreateIfcInput!): Ifc!
+  createElement(createElementInput: CreateElementInput!): Element!
   createMetaData(createMetaDataInput: CreateMetaDataInput!): MetaData!
   createGeometry(createGeometryInput: CreateGeometryInput!): Geometry!
 }
 
-input CreateIfcInput {
+input CreateElementInput {
   expressID: Float!
   name: String!
   class: String!

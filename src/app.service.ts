@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { IfcService } from './ifc/ifc.service';
+import { ElementService } from './element/element.service';
 import { IfcAPI, FlatMesh } from 'web-ifc';
 import {readFileSync} from 'fs';
 import { join } from 'path';
@@ -9,14 +9,14 @@ import { GeometryService } from './geometry/geometry.service';
 import { ConfigService } from '@nestjs/config';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
-import { Ifc } from './ifc/ifc.entity';
+import { Element } from './element/element.entity';
 import { DbSwitch } from './middlewares/DbSwitch.middleware';
 
 
 @Injectable()
 export class AppService {
 
-  private ifcService: IfcService;
+  private elementService: ElementService;
   private metaDataService: MetaDataService;
   private geometryservice: GeometryService;
   private IFCAPI: IfcAPI;
@@ -28,9 +28,9 @@ export class AppService {
     this.IFCAPI = new IfcAPI(); 
   }
 
-  async init(ifcService: IfcService, metaDataService: MetaDataService, geometryservice: GeometryService, configService: ConfigService){
+  async init(elementService: ElementService, metaDataService: MetaDataService, geometryservice: GeometryService, configService: ConfigService){
     this.metaDataService = metaDataService;
-    this.ifcService = ifcService;
+    this.elementService = elementService;
     this.geometryservice = geometryservice;
     const database = "walltest"; 
 
@@ -72,7 +72,7 @@ export class AppService {
     for (let i = 0; i < elementIds.length; i++) { 
       const element = this.IFCAPI.GetLine(modelID, elementIds[i]);
 
-      this.ifcService.createElementRecord({
+      this.elementService.createElementRecord({
         expressID: element.expressID,
         class: IfcUtils.getNameFromTypeCode(this.IFCAPI, element.type),
         globalID: element.GlobalId.value,

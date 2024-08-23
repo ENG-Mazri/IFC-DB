@@ -1,7 +1,7 @@
 import { Field, InputType } from "@nestjs/graphql";
 
 @InputType()
-export class CreateIfcInput{
+export class CreateElementInput{
     @Field()
     expressID: number;
 
