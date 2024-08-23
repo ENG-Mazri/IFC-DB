@@ -32,6 +32,13 @@ type Geometry {
   color: String!
 }
 
+type Attribute {
+  id: Int!
+  expressID: Float!
+  name: String!
+  value: String!
+}
+
 type Query {
   getElements: [Element!]!
   getElementByExpressID(expressID: Int!): Element!
@@ -40,12 +47,14 @@ type Query {
   getGeometries: [Geometry!]!
   getGeometryByGeometryID(geometryID: Int!): Geometry!
   getElementGeometriesByExpressId(expressID: Int!): [Geometry!]!
+  findAll: [Attribute!]!
 }
 
 type Mutation {
   createElement(createElementInput: CreateElementInput!): Element!
   createMetaData(createMetaDataInput: CreateMetaDataInput!): MetaData!
   createGeometry(createGeometryInput: CreateGeometryInput!): Geometry!
+  createAttribute(createAttributeInput: CreateAttributeInput!): Attribute!
 }
 
 input CreateElementInput {
@@ -73,4 +82,10 @@ input CreateGeometryInput {
   indices: String!
   matrix: String!
   color: String!
+}
+
+input CreateAttributeInput {
+  expressID: Float!
+  name: String!
+  value: String!
 }

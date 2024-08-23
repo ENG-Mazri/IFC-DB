@@ -17,6 +17,18 @@ import { Geometry } from './geometry/geometry.entity';
 import { MySQLConfigService } from './mysql.config';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
+import { AttributesModule } from './attributes/attributes.module';
+import { AttributesService } from './attributes/attributes.service';
+import { Attribute } from './attributes/attribute.entity';
+import { PsetsModule } from './psets/psets.module';
+import { ClassificationModule } from './classification/classification.module';
+import { PartofModule } from './partof/partof.module';
+import { PsetsService } from './psets/psets.service';
+import { ClassificationService } from './classification/classification.service';
+import { PartofService } from './partof/partof.service';
+import { Pset } from './psets/pset.entity';
+import { Classification } from './classification/classification.entity';
+import { Partof } from './partof/partof.entity';
 
 
 //docker exec -it mysql-24 bash
@@ -61,10 +73,24 @@ import { LoggerMiddleware } from './middlewares/logger.middleware';
     ElementModule,
     MetadataModule,
     GeometryModule,
-    TypeOrmModule.forFeature([Element, MetaData, Geometry])
+    TypeOrmModule.forFeature([Element, MetaData, Geometry, Attribute, Pset, Classification, Partof]),
+    AttributesModule,
+    PsetsModule,
+    ClassificationModule,
+    PartofModule
   ],
   controllers: [AppController],
-  providers: [AppService, MySQLConfigService, ElementService, MetaDataService, GeometryService, ConfigService],
+  providers: [
+    AppService,
+    MySQLConfigService,
+    ElementService,
+    MetaDataService,
+    GeometryService,
+    AttributesService,
+    PsetsService,
+    ClassificationService,
+    PartofService,
+    ConfigService],
 })
 
 export class AppModule {
@@ -78,9 +104,13 @@ export class AppModule {
       private elementService: ElementService, 
       private metaDataService: MetaDataService,
       private geometryService: GeometryService,
+      private attributesService: AttributesService,
+      private psetsService: PsetsService,
+      private classificationService: ClassificationService,
+      private partofService: PartofService,
       private configService: ConfigService
   ){
-    this.appService.init(elementService, metaDataService, geometryService, configService);
+    this.appService.init(elementService, metaDataService, geometryService, attributesService, psetsService, classificationService, partofService, configService);
   }
   
 }

@@ -11,6 +11,10 @@ import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
 import { Element } from './element/element.entity';
 import { DbSwitch } from './middlewares/DbSwitch.middleware';
+import { PsetsService } from './psets/psets.service';
+import { ClassificationService } from './classification/classification.service';
+import { PartofService } from './partof/partof.service';
+import { AttributesService } from './attributes/attributes.service';
 
 
 @Injectable()
@@ -28,14 +32,23 @@ export class AppService {
     this.IFCAPI = new IfcAPI(); 
   }
 
-  async init(elementService: ElementService, metaDataService: MetaDataService, geometryservice: GeometryService, configService: ConfigService){
+  async init( 
+    elementService: ElementService,
+    metaDataService: MetaDataService,
+    geometryservice: GeometryService,
+    attributesService: AttributesService,
+    psetsService: PsetsService,
+    classificationService: ClassificationService,
+    partofService: PartofService,
+    configService: ConfigService ){
+      
     this.metaDataService = metaDataService;
     this.elementService = elementService;
     this.geometryservice = geometryservice;
     const database = "walltest"; 
 
-    await DbSwitch(this.entityManager.connection, database, true);
-    await this.processModel('wallTest.ifc');
+    // await DbSwitch(this.entityManager.connection, database, true);
+    // await this.processModel('wallTest.ifc');
   }
 
   public async processModel(name: string){
